@@ -5,7 +5,8 @@ gt.Globe = function (container) {
   var Shaders = {
 	'earth': {}
   };
-  var camera, scene, light, renderer, controls;
+  
+  var camera, scene, light, renderer, controls, earth;
   var w = window.innerWidth,
       h = window.innerHeight;
 
@@ -13,8 +14,8 @@ gt.Globe = function (container) {
 	
   	setScene();
   	setCamera();
-    addController();
   	setRenderer();
+    addController();
   	render();
 
   };
@@ -29,13 +30,14 @@ gt.Globe = function (container) {
     stats.domElement.style.zIndex = 100;
   	container.appendChild( renderer.domElement );
     container.appendChild( stats.domElement );
+
   };
 
   function setScene () {
 
   	scene = new THREE.Scene();
-  	light = new THREE.PointLight( 0xffffff );
-  	light.position.set(100, 0, -500);
+  	light = new THREE.PointLight( 0xffffff, 2, 10000);
+  	light.position.set(0, 0, 600);
     scene.add( light );
     light = new THREE.DirectionalLight( 0x002288 );
     light.position.set( 1, 0 , 1);
@@ -43,7 +45,7 @@ gt.Globe = function (container) {
     light = new THREE.DirectionalLight( 0x002288 );
     light.position.set( -1, -1 , -1);
     scene.add( light );
-    light = new THREE.AmbientLight( 0x222222 );
+    light = new THREE.AmbientLight( 0x222222, 5);
   	scene.add( light );
   	addMesh();
 
@@ -51,7 +53,7 @@ gt.Globe = function (container) {
 
   function setCamera () {
 
-    camera = new THREE.PerspectiveCamera( 60, w / h, 0.1, 1000 );
+    camera = new THREE.PerspectiveCamera( 60, w / h, 0.1, 2000 );
     camera.position.z = 500;
     scene.add(camera);
 
@@ -59,8 +61,7 @@ gt.Globe = function (container) {
 
   function addController () {
 
-    controls = new THREE.OrbitControls( camera );
-    controls.addEventListener( 'change', render );
+    controls = new THREE.TrackballControls( camera,  container);
 
   };
 
@@ -70,25 +71,24 @@ gt.Globe = function (container) {
     var material = new THREE.MeshPhongMaterial();
     material.map = THREE.ImageUtils.loadTexture('../images/earth_surface_2048.jpg');
     material.bumpMap = THREE.ImageUtils.loadTexture('../images/bump_earth.jpg');
-    material.bumpScale = 0.5;
+    material.bumpScale = 5;
     material.specularMap = THREE.ImageUtils.loadTexture('../images/earth_specular_2048.jpg');
 	  var globe = new THREE.Mesh(geometry, material);
     globe.updateMatrix();
     globe.matrixAutoUpdate = false;
     globe.rotation.z = 0.41;
-    var cloudGeometry   = new THREE.SphereGeometry(200.5, 32, 32);
+    var cloudGeometry   = new THREE.SphereGeometry(205, 32, 32);
 	  var material  = new THREE.MeshPhongMaterial({
 	  map     : THREE.ImageUtils.loadTexture('../images/earth_clouds_1024.png'),
 	  side        : THREE.DoubleSide,
 	  opacity     : 0.8,
 	  transparent : true,
-	  depthWrite  : false,
+	  depthWrite  : false
 
 	  });
 
   	var cloudMesh = new THREE.Mesh(cloudGeometry, material);
-  	
-    var earth = new THREE.Object3D();
+    earth = new THREE.Object3D();
   	earth.add(globe);
   	earth.add(cloudMesh);
   	scene.add(earth);
@@ -102,8 +102,6 @@ gt.Globe = function (container) {
 
     renderer.setSize( w, h );
 
-    controls.handleResize();
-
     render();
 
   };
@@ -112,11 +110,14 @@ gt.Globe = function (container) {
 
     requestAnimationFrame( animate );
     controls.update();
+    render();
 
   };
 
   function render() {
 
+    camera.lookAt( scene.position );
+    earth.rotation.y -= 0.005;
     renderer.render( scene, camera );
     stats.update();
 
