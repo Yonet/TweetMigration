@@ -39,9 +39,10 @@ gt.Globe = function (container) {
   };
 
   function addMesh () {
-  	//var earthmap = "../images/earth_surface_2048.jpg";
+  	var earthmap = "../images/earth_surface_2048.jpg";
   	var geometry = new THREE.SphereGeometry(1, 32, 32);
-  	var material = new THREE.MeshBasicMaterial( { color: 0x00CCFF } );
+  	var texture = THREE.ImageUtils.loadTexture(earthmap)
+  	var material = new THREE.MeshBasicMaterial( { map: texture } );
 	var globe = new THREE.Mesh(geometry, material);
 
 	scene.add(globe);
