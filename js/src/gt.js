@@ -13,8 +13,7 @@ gt.Globe = function (container) {
   	setCamera();
   	setRenderer();
     addController();
-    tweets = gt.utils.addPoints(data);
-    scene.add(tweets);
+
     //addSkybox();
   	render();
 
@@ -74,6 +73,7 @@ gt.Globe = function (container) {
     material.bumpScale = 5;
     material.specularMap = THREE.ImageUtils.loadTexture('../images/earth_specular_2048.jpg');
 	  var globe = new THREE.Mesh(geometry, material);
+    globe.rotation.z = 0.41;
     globe.updateMatrix();
     globe.matrixAutoUpdate = false;
     var cloudGeometry   = new THREE.SphereGeometry(205, 32, 32);
@@ -91,6 +91,8 @@ gt.Globe = function (container) {
     // earth.rotation.z = 0.41;
   	earth.add(globe);
   	earth.add(cloudMesh);
+    tweets = gt.utils.addPoints(data);
+    earth.add(tweets);
   	scene.add(earth);
 
   };
