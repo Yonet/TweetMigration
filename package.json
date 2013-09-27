@@ -1,0 +1,27 @@
+{
+  "name": "y",
+  "version": "0.0.0",
+  "description": "Tweet visualizer",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Yonet/Tweets-Migration.git"
+  },
+  "engines": {
+    "node": "0.10.15",
+    "npm": "1.3.5"
+  },
+  "keywords": [
+    "Tweeter",
+    "WebGl",
+    "Visualizer"
+  ],
+  "author": "Aysegul Yonet",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/Yonet/Tweets-Migration/issues"
+  }
+}
