@@ -2,7 +2,7 @@ var express      = require('express');
 var app          = express();
 var server       = require('http').createServer(app);
 var io           = require('socket.io').listen(server);
-process.env.PORT = process.env.PORT || 80;
+process.env.PORT = process.env.PORT || 8080;
 var path         = require('path');
 var url          = 'http://localhost:' + process.env.PORT + '/';
 

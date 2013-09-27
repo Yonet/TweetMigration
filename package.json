@@ -23,5 +23,13 @@
   "license": "BSD",
   "bugs": {
     "url": "https://github.com/Yonet/Tweets-Migration/issues"
+  },
+  "dependencies": {
+    "socket.io": "~0.9.16",
+    "express": "~3.4.0",
+    "path": "~0.4.9",
+    "stylus": "~0.38.0",
+    "jshint": "~2.1.11",
+    "uglify-js": "~1.3.5"
   }
 }
