@@ -1,15 +1,15 @@
 gt.utils = {
 
-	latLongToVector3: function  (lat, lon, radius, height) {
-	    var phi = (90 - lat)*Math.PI/180;
-	    var theta = (180 - lon)*Math.PI/180;
-	    var x = -(radius) * Math.cos(phi) * Math.cos(theta);
-	    var y = (radius) * Math.sin(phi);
-	    var z = (radius) * Math.cos(phi) * Math.sin(theta);
+    latLongToVector3: function  (lat, lon, radius) {
+	  var phi = lat*Math.PI/180;//lon
+	  var theta = lon*Math.PI/180;//lat
 
+      var x = radius * Math.cos(phi) * Math.cos(theta);//lon
+	  var y = radius * Math.cos(phi) * Math.sin(theta);//lat
+	  var z = radius * Math.sin(phi);
 
-	    return new THREE.Vector3(x,y,z);
-	},
+	  return new THREE.Vector3(x,y,z);
+    },
 
 	addPoints: function (data) {
 
@@ -26,7 +26,7 @@ gt.utils = {
 	        console.log('x : ' + x + ' y : ' + y);
 
 
-	        var position = this.latLongToVector3(y, x, 200, 30);
+	        var position = this.latLongToVector3( x, y, 200);
 	        console.log(position['x'], position['y'], position['z']);
 	        var particle = new THREE.Vector3(position['x'], position['y'], position['z']);
             particles.vertices.push(particle); 

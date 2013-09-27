@@ -1,13 +1,21 @@
 var gt = {};
 
-var fs = require('fs');
+// var fs = require('fs');
 
 
 gt.Globe = function (container,data) {
 
   var camera, scene, light, renderer, controls, earth,tweets;
-  var w = 1000,
-      h = 600;
+  var w = window.innerWidth,
+      h = window.innerHeight;
+  var data = [{name: 'Istanbul',
+  "geo":{"lat":41.005462,"lon": 28.974853}},
+  {name: 'North Pole', 
+  "geo":{"lat":90,"lon": 0.0}},
+  {name: 'equator near columbia', 
+  "geo":{"lat":0.0,"lon": -90}},
+  {name: 'SF',
+  "geo":{"lat": 37.7835916,"lon": -122.4091141}}]
 
   function init () {
 	
@@ -37,9 +45,7 @@ gt.Globe = function (container,data) {
   function setScene () {
 
   	scene = new THREE.Scene();
-  	light = new THREE.PointLight( 0xffffff, 2, 10000);
-  	light.position.set(0, 0, 600);
-    scene.add( light );
+
     light = new THREE.DirectionalLight( 0x002288 );
     light.position.set( 1, 0 , 1);
     scene.add( light );
@@ -56,6 +62,9 @@ gt.Globe = function (container,data) {
 
     camera = new THREE.PerspectiveCamera( 60, w / h, 0.1, 20000 );
     camera.position.z = 500;
+    light = new THREE.PointLight( 0xffffff, 1, 10000);
+    light.position.set(0, 0, 600);
+    camera.add( light );
     scene.add(camera);
 
   };
@@ -93,12 +102,12 @@ gt.Globe = function (container,data) {
     // earth.rotation.z = 0.41;
   	earth.add(globe);
   	earth.add(cloudMesh);
-    tweets = fs.readFile('filtered_tweets.json', function (err, data) {
-      if (err) throw err;
-      gt.utils.addPoints(data);
-      console.log(data);
-    });
-    // tweets = gt.utils.addPoints;
+    // tweets = fs.readFile('filtered_tweets.json', function (err, data) {
+    //   if (err) throw err;
+    //   gt.utils.addPoints(data);
+    //   console.log(data);
+    // });
+    tweets = gt.utils.addPoints(data);
     earth.add(tweets);
   	scene.add(earth);
 
