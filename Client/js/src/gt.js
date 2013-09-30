@@ -90,14 +90,14 @@ gt.Globe = function (container) {
     globe.matrixAutoUpdate = false;
     var cloudGeometry   = new THREE.SphereGeometry(205, 32, 32);
     //cloud material
-	  var material  = new THREE.MeshPhongMaterial({
-  	  map     : THREE.ImageUtils.loadTexture('../images/earth_clouds_1024.png'),
-  	  side        : THREE.DoubleSide,
-  	  opacity     : 0.8,
-  	  transparent : true,
-  	  depthWrite  : false
+    var material  = new THREE.MeshPhongMaterial({
+      map     : THREE.ImageUtils.loadTexture('../images/earth_clouds_1024.png'),
+      side        : THREE.DoubleSide,
+      opacity     : 0.8,
+      transparent : true,
+      depthWrite  : false
 
-	    });
+    });
 
     var cloudMesh = new THREE.Mesh(cloudGeometry, material);
     cloud = new THREE.Object3D();
