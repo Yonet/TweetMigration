@@ -13,19 +13,19 @@ gt.utils = {
    },
    addPoints: function (data) {
 
-  var particles = new THREE.Geometry();
+    var particles = new THREE.Geometry();
 
-  var particleMaterial = new THREE.ParticleBasicMaterial({ color: 0x990000, size: 50, map: THREE.ImageUtils.loadTexture( "../../images/particle.png" ),blending: THREE.AdditiveBlending, transparent:true});
-  for (var i = 0 ; i < data.length; i++) {
-    var x = parseInt(data[i]['geo']['lat']);
-    var y = parseInt(data[i]['geo']['lon']);
-    var position = this.latLongToVector3( x, y, 200);
-    var particle = new THREE.Vector3(position['x'], position['y'], position['z']);
-    particles.vertices.push(particle); 
+    var particleMaterial = new THREE.ParticleBasicMaterial({ color: 0x990000, size: 50, map: THREE.ImageUtils.loadTexture( "../../images/particle.png" ),blending: THREE.AdditiveBlending, transparent:true});
+    for (var i = 0 ; i < data.length; i++) {
+      var x = parseInt(data[i]['geo']['lat']);
+      var y = parseInt(data[i]['geo']['lon']);
+      var position = this.latLongToVector3( x, y, 200);
+      var particle = new THREE.Vector3(position['x'], position['y'], position['z']);
+      particles.vertices.push(particle); 
 
-  }
+    }
 
-  return new THREE.ParticleSystem(particles, particleMaterial);
+    return new THREE.ParticleSystem(particles, particleMaterial);
 
   }
 };
