@@ -281,9 +281,10 @@ THREE.OrbitControls = function ( object, domElement ) {
 	}
 
 	function onMouseDown( event ) {
+		if (event.target.tagName === 'SELECT') return;
 
 		if ( scope.enabled === false ) { return; }
-		event.preventDefault();
+		// event.preventDefault();
 
 		if ( event.button === 0 ) {
 			if ( scope.noRotate === true ) { return; }
@@ -318,7 +319,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		if ( scope.enabled === false ) return;
 
-		event.preventDefault();
+		// event.preventDefault();
 
 		var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
 
@@ -495,7 +496,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 		if ( scope.enabled === false ) { return; }
 
-		event.preventDefault();
+		// event.preventDefault();
 		event.stopPropagation();
 
 		var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
@@ -567,7 +568,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		state = STATE.NONE;
 	}
 
-	this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+	// this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
 	this.domElement.addEventListener( 'mousedown', onMouseDown, false );
 	this.domElement.addEventListener( 'mousewheel', onMouseWheel, false );
 	this.domElement.addEventListener( 'DOMMouseScroll', onMouseWheel, false ); // firefox
