@@ -217,7 +217,7 @@ gt.App.prototype.reconnect = function() {
 };
 
 gt.App.prototype.disconnect = function() {
-	this.socket.socket.disconnect();
+	this.socket.disconnect();
 };
 
 gt.App.prototype.showOverlay = function(type) {
