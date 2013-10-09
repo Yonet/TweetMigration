@@ -1,3 +1,6 @@
+html {
+	overflow: hidden
+}
 body {
 	margin: 0;
 }
@@ -32,23 +35,23 @@ body {
 	padding: 10px;
 	min-width: 47px;
 
-	background: rgba(100, 100, 100, 0.25);
+	background: rgba(100, 100, 100, 0.50);
 
+	border: 1px solid rgba(255, 255, 255, 0.10);
 	border-radius: 5px;
-	box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+	box-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
 
-	color: white;
+	text-align: center;
+	font-weight: bold;
 	font-family: sans-serif;
+	color: rgba(200, 200, 200, 0.65);
+	text-shadow: -1px -1px 0 rgba(0, 0 ,0 ,0.25);
 }
 
 .gt_heatmapType {
 	opacity: 0.75; /* Fade out slightly so it doesn't detract from the visualization */
-}
 
-.gt_count {
-	font-weight: bold;
-	text-align: center;
-	color: rgba(200, 200, 200, 0.5);
+	font-size: 20px;
 }
 
 .gt_overlay {
