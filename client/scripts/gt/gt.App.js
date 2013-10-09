@@ -40,7 +40,7 @@ gt.App = function(options) {
 	this.renderer.setSize(this.width, this.height);
 	this.canvas = this.renderer.domElement;
 	this.canvas.className = 'gt_canvas';
-	
+
 	// Add canvas to container
 	this.container.appendChild(this.canvas);
 
@@ -179,7 +179,7 @@ gt.App.prototype.render = function() {
 gt.App.prototype.add = function(data) {
 	this.count++;
 
-	this.countEl.innerText = this.count;
+	this.countEl.innerText = this.count.toLocaleString()+' tweets';
 
 	this.heatmap.add(data);
 	// this.addMarker(data); // Markers are very, very slow
