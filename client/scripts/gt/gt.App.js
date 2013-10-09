@@ -12,11 +12,21 @@ gt.App = function(options) {
 
 	// Track time change for render loop
 	this.lastTime = 0;
+	this.lastSunAlignment = 0;
 
 	// Create a container
-	this.container = document.createElement('div');
-	this.container.className = 'gt_container';
-	this.el.appendChild(this.container);
+	// Create an element for output
+	this.el.insertAdjacentHTML('beforeend', document.getElementById('gt_template').innerHTML);
+	this.container = this.el.querySelector('.gt_container');
+	this.countEl = this.container.querySelector('.gt_count');
+	this.overlay = this.container.querySelector('.gt_overlay');
+	this.indicator = this.container.querySelector('.gt_indicator');
+	this.output = this.container.querySelector('.gt_output');
+
+	// Listen to visualization type change
+	this.container.querySelector('.gt_heatmapType').addEventListener('change', function(evt) {
+		this.heatmap.set(gt.config.heatmap[evt.target.value]);
+	}.bind(this));
 
 	// Get width of element
 	this.width = this.el.scrollWidth;
@@ -31,22 +41,6 @@ gt.App = function(options) {
 	// Add canvas to container
 	this.container.appendChild(this.canvas);
 
-	// Create an element for output
-	this.output = document.createElement('div');
-	this.output.className = 'gt_output';
-	this.container.appendChild(this.output);
-
-	// Create an overlay
-	this.overlay = document.createElement('div');
-	this.overlay.className = 'gt_overlay';
-	this.overlay.style.display = 'none';
-	this.container.appendChild(this.overlay);
-
-	// Create the pause item
-	this.paused = document.createElement('div');
-	this.paused.className = 'gt_paused';
-	this.overlay.appendChild(this.paused);
-
 	// Create scene
 	var scene = this.scene = new THREE.Scene();
 
@@ -56,27 +50,30 @@ gt.App = function(options) {
 	scene.add(camera);
 
 	// Setup lights
-	var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
-	directionalLight.position.set(1, 0, 1);
-	scene.add(directionalLight);
+	this.directionalLight =  new THREE.DirectionalLight(0xFFFFFF);
+	scene.add(this.directionalLight);
 
-	var ambientLight = new THREE.AmbientLight(0x222222, 10);
-	scene.add(ambientLight);
+	this.ambientLight = new THREE.AmbientLight(0x222222, 10);
+	scene.add(this.ambientLight);
 
-	var cameraLight = new THREE.PointLight(0xFFFFFF, 1, 2000);
-	cameraLight.position.set(0, 0, 600);
+	var cameraLight = new THREE.PointLight(0xFFFFFF, 1, 1500);
+	cameraLight.position.set(0, 0, gt.config.cameraDistance);
 	camera.add(cameraLight);
 
 	// Add controls
 	// this.controls = new THREE.TrackballControls(this.camera, this.el);
 	this.controls = new THREE.OrbitControls(this.camera, this.el);
 
+	// Show spinner
+	this.showSpinner();
+
 	// Add globe
 	this.globe = new gt.Globe({
 		scene: scene,
 		radius: gt.config.earthRadius,
 		cloudRadius: gt.config.cloudRadius,
-		cloudSPeed: gt.config.cloudSpeed
+		cloudSpeed: gt.config.cloudSpeed,
+		loaded: this.hideSpinner.bind(this)
 	});
 
 	// Add skybox
@@ -86,14 +83,17 @@ gt.App = function(options) {
 		prefix: 'Purple_Nebula_'
 	});
 
+	var heatmapConfig = gt.config.heatmap[gt.config.heatmapStyle];
+
 	// Add heatmap
 	this.heatmap = new gt.Heatmap({
 		scene: scene,
 		radius: gt.config.earthRadius + 1,
-		size: 8,
-		intensity: 0.75,
-		doBlur: true,
-		decayFactor: 0.99999
+		fps: heatmapConfig.fps,
+		size: heatmapConfig.size,
+		intensity: heatmapConfig.intensity,
+		doBlur: heatmapConfig.doBlur,
+		decayFactor: heatmapConfig.decayFactor
 	});
 
 	// Add listeners
@@ -105,22 +105,151 @@ gt.App = function(options) {
 
 	// Start animation
 	this.animate(0);
+
+	this.setSunPosition();
+
+	// Ask for and watch user's position
+	navigator.geolocation.watchPosition(this.handleGeolocationChange.bind(this));
+
+	// Addd debug information
+	if (gt.config.debug)
+		this.addStats();
+};
+
+// Animation
+gt.App.prototype.animate = function(time) {
+	var timeDiff = time - this.lastTime;
+	this.lastTime = time;
+
+	// Update hooked functions
+	this.controls.update();
+	this.heatmap.update(timeDiff, time);
+	this.globe.update(timeDiff, time);
+
+	// Re-align the sun every minute
+	if (time - this.lastSunAlignment > 1000*60) {
+		this.setSunPosition();
+		this.lastSunAlignment = time;
+	}
+
+	// Slowly set time for today's date
+	// this.setSunPosition(gt.util.getDOY(), time / 1000 % 24);
+
+	// Test year + day
+	// this.setSunPosition(time / 100 % 365, time / 24 % 24);
+
+	this.render();
+	requestAnimationFrame(this.animate);
+
+	if (this.stats)
+		this.stats.update();
+};
+
+gt.App.prototype.setSunPosition = function(dayOfYear, utcHour) {
+	if (typeof dayOfYear === 'undefined' || typeof dayOfYear === 'undefined') {
+		var d = new Date();
+		dayOfYear = gt.util.getDOY(d);
+		utcHour = d.getUTCHours();
+	}
+
+	var sunFraction = utcHour / 24;
+
+	// Calculate the longitude based on the fact that the 12th hour UTC should be sun at 0° latitude
+	var sunLong = sunFraction * -360 + 180;
+
+	// Calculate declination angle
+	// Via http://pveducation.org/pvcdrom/properties-of-sunlight/declination-angle
+	var sunAngle = 23.45*Math.sin(gt.util.deg2rad(360/365 * (dayOfYear-81)));
+
+	// Calcuate the 3D position of the sun
+	var sunPos = gt.util.latLongToVector3(sunAngle, sunLong, 1500);
+	this.directionalLight.position.copy(sunPos);
+
+	// console.log('%s on %d day of year: Sun at longitude %s, angle %s', utcHour.toFixed(3), dayOfYear, sunLong.toFixed(3), sunAngle.toFixed(3));
+};
+
+gt.App.prototype.render = function() {
+	this.renderer.render(this.scene, this.camera);
+};
+
+// Marker management
+gt.App.prototype.add = function(data) {
+	this.count++;
+
+	this.countEl.innerText = this.count;
+
+	this.heatmap.add(data);
+	// this.addMarker(data); // Markers are very, very slow
+};
+
+gt.App.prototype.addMarker = function(data) {
+	// Create a new marker instance
+	var marker = new gt.Marker({
+		user: data.user,
+		tweet: data.tweet,
+		location: data.location,
+		radius: gt.config.markerRadius,
+		scene: this.scene
+	});
+
+	// Store instance
+	this.markers.push(marker);
+};
+
+gt.App.prototype.rotateTo = function(pos) {
+	// TODO: Animate rotation smoothly
+	this.camera.position = gt.util.latLongToVector3(pos.coords.latitude, pos.coords.longitude, gt.config.cameraDistance);
+	this.camera.lookAt(this.scene.position);
+};
+
+gt.App.prototype.connect = function() {
+	this.socket = io.connect();
+
+	// Add markers when the server emits them
+	this.socket.on('marker', this.add.bind(this));
+};
+
+gt.App.prototype.reconnect = function() {
+	this.socket.socket.connect();
+};
+
+gt.App.prototype.disconnect = function() {
+	this.socket.socket.disconnect();
+};
+
+gt.App.prototype.showOverlay = function(type) {
+	this.overlay.classList.remove('hide');
+	if (type)
+		this.indicator.className = 'gt_'+type;
+};
+
+gt.App.prototype.hideOverlay = function(type) {
+	this.overlay.classList.add('hide');
+	if (type)
+		this.indicator.className = 'gt_'+type;
+};
+
+// Handlers
+gt.App.prototype.showSpinner = function() {
+	this.showOverlay('loading');
+};
+
+gt.App.prototype.hideSpinner = function() {
+	this.hideOverlay('loading');
 };
 
 gt.App.prototype.handleBlur = function() {
-	this.overlay.style.display = '';
+	this.showOverlay('paused');
 	this.disconnect();
 };
+
 gt.App.prototype.handleFocus = function() {
-	this.overlay.style.display = 'none';
+	this.hideOverlay('paused');
 	this.reconnect();
 };
 
-gt.App.prototype.addStats = function() {
-	this.stats = new Stats();
-	this.stats.domElement.style.position = 'absolute';
-	this.stats.domElement.style.top = '0px';
-	this.container.appendChild(this.stats.domElement);
+gt.App.prototype.handleGeolocationChange = function(pos) {
+	this.rotateTo(pos);
 };
 
 gt.App.prototype.handleWindowResize = function() {
@@ -140,66 +269,7 @@ gt.App.prototype.handleWindowResize = function() {
 	this.canvas.style.display = 'block';
 };
 
-
-gt.App.prototype.animate = function(time) {
-	var timeDiff = time - this.lastTime;
-	this.lastTime = time;
-
-	// Update hooked functions
-	this.controls.update();
-	this.heatmap.update(timeDiff, time);
-	this.globe.update(timeDiff, time);
-
-	// this.camera.lookAt(this.scene.position);
-	this.render();
-	requestAnimationFrame(this.animate);
-
-	if (this.stats)
-		this.stats.update();
-};
-
-gt.App.prototype.render = function() {
-	this.renderer.render(this.scene, this.camera);
-};
-
-gt.App.prototype.addMarker = function(data) {
-	// Create a new marker instance
-	var marker = new gt.Marker({
-		user: data.user,
-		tweet: data.tweet,
-		location: data.location,
-		radius: gt.config.markerRadius,
-		scene: this.scene
-	});
-
-	// Store instance
-	this.markers.push(marker);
-};
-
-gt.App.prototype.connect = function() {
-	this.socket = io.connect();
-
-	// Add markers when the server emits them
-	this.socket.on('marker', this.add.bind(this));
-};
-
-gt.App.prototype.reconnect = function() {
-	this.socket.socket.connect();
-};
-
-gt.App.prototype.disconnect = function() {
-	this.socket.socket.disconnect();
-};
-
-gt.App.prototype.add = function(data) {
-	this.count++;
-
-	this.output.innerText = this.count;
-
-	this.heatmap.add(data);
-	// this.addMarker(data); // Markers are very, very slow
-};
-
+// Debug methods
 gt.App.prototype.addTestData = function() {
 	this.add({
 		label: 'SF',
@@ -213,4 +283,11 @@ gt.App.prototype.addTestData = function() {
 			});
 		}
 	}
+};
+
+gt.App.prototype.addStats = function() {
+	this.stats = new Stats();
+	this.stats.domElement.style.position = 'absolute';
+	this.stats.domElement.style.top = '0px';
+	this.container.appendChild(this.stats.domElement);
 };

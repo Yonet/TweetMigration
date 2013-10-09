@@ -42,6 +42,13 @@ gt.util = {
 		return deg * Math.PI / 180;
 	},
 
+	// Get the fractional day of the year for a given date
+	// Use the current date if no date provided
+	getDOY: function(date) {
+		date = date || new Date();
+		return date.getTime()/1000/60/60/24 % 365;
+	},
+
 	extend: function() {
 		var objs = arguments;
 		var result = objs[0];

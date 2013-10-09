@@ -4,6 +4,16 @@ body {
 
 .gt_container {
 	position: relative;
+	background: black;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	cursor: crosshair;
 }
 
 /* Prevent overflow due to canvas acting as inline */
@@ -13,8 +23,10 @@ body {
 
 .gt_output {
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	top: 0;
+	right: 0;
+
+	margin: 10px;
 
 	padding: 10px;
 	min-width: 47px;
@@ -26,11 +38,16 @@ body {
 
 	color: white;
 	font-family: sans-serif;
+}
+
+.gt_count {
 	font-weight: bold;
 	text-align: center;
+	color: rgba(200, 200, 200, 0.5);
 }
 
 .gt_overlay {
+	/* Fill the parent positioned-relative element */
 	position: absolute;
 	z-index: 100;
 	top: 0;
@@ -41,6 +58,78 @@ body {
 	background: rgba(0, 0, 0, 0.5);
 }
 
+/* Keyframes per https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes */
+@-webkit-keyframes gt_fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@-webkit-keyframes gt_fadeOut {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes gt_rotate {
+	0% {
+		-webkit-transform: rotate(0);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+/*
+@-webkit-keyframes gt_fadeOut {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+Include value `forwards` in animation property to stop at last frame instead of returning to default
+Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
+*/
+
+.gt_overlay {
+	-webkit-animation: gt_fadeIn 0.25s;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.gt_overlay.hide {
+	-webkit-animation: gt_fadeOut 0.25s;
+	-webkit-animation-fill-mode: forwards;
+	z-index: -1;
+}
+
+.gt_loading {
+	-webkit-animation: gt_rotate 2s linear infinite;
+	padding-right: 20px;
+}
+
+.gt_loading:after {
+	display: block;
+	content: '࿂';
+
+	text-align: center;
+	color: rgba(100, 100, 100, 0.75);
+	font-size: 200px;
+	font-family: Helvetica;
+	line-height: 100px;
+
+	text-shadow: 0 0 5px solid rgba(0,0,0,0.5);
+}
+
+.gt_loading,
 .gt_paused {
 	position: absolute;
 	left: 50%;
@@ -70,5 +159,32 @@ body {
 }
 
 .gt_paused:after {
+	left: 0;
+}
+
+.gt_output label {
+	display: block;
+}
+.gt_output input {
+	vertical-align: top;
+}
+
+.gt_top {
+	bottom: auto;
+	top: 0;
+}
+
+.gt_right {
+	left: auto;
+	right: 0;
+}
+
+.gt_bottom {
+	top: auto;
+	bottom: 0;
+}
+
+.gt_left {
+	right: auto;
 	left: 0;
 }

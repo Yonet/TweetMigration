@@ -1,5 +1,7 @@
 gt.Heatmap = function(options) {
-	gt.util.extend(this, this.constructor.defaults, options);
+	this.set(options);
+
+	this.lastUpdate = 0;
 
 	this.canvas = document.createElement('canvas');
 
@@ -34,18 +36,29 @@ gt.Heatmap = function(options) {
 };
 
 gt.Heatmap.defaults = {
+	radius: 200,
 	width: 1024,
 	height: 512,
-	radius: 200,
-	size: 8,
-	intensity: 0.05,
-	decayFactor: 0.9999,
+	fps: 18,
+	size: 10,
+	intensity: 1,
+	decayFactor: 1/1000,
 	doBlur: false
+};
+
+gt.Heatmap.prototype.set = function(options) {
+	gt.util.extend(this, this.constructor.defaults, options);
+
+	// Invert decay factor
+	this.decayFactor = this.decayFactor === 0 ? 0 : 1 - this.decayFactor;
 };
 
 gt.Heatmap.prototype.add = function(data) {
 	var pos = gt.util.latLongTo2dCoordinate(data.location[0], data.location[1], this.width, this.height)
 
+	if (pos.x === 0) {
+		console.error('Got 0,0 location', data)
+	}
 	this.heatmap.addPoint(pos.x, pos.y, this.size, this.intensity);
 
 	// Tell THREE to update the texture from the canvas
@@ -54,6 +67,10 @@ gt.Heatmap.prototype.add = function(data) {
 };
 
 gt.Heatmap.prototype.update = function(timeDiff, time) {
+	if (time - this.lastUpdate < 1000/this.fps) return;
+
+	this.lastUpdate = time;
+
 	// Smooth hack: In order to make the heatmap smoothly decay
 	// We must add a dummy point
 	this.heatmap.addPoint(0, 0, 0, 0);
