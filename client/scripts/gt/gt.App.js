@@ -14,6 +14,9 @@ gt.App = function(options) {
 	this.lastTime = 0;
 	this.lastSunAlignment = 0;
 
+	// Track loaded status
+	this.loaded = false;
+
 	// Create a container
 	// Create an element for output
 	this.el.insertAdjacentHTML('beforeend', document.getElementById('gt_template').innerHTML);
@@ -73,7 +76,7 @@ gt.App = function(options) {
 		radius: gt.config.earthRadius,
 		cloudRadius: gt.config.cloudRadius,
 		cloudSpeed: gt.config.cloudSpeed,
-		loaded: this.hideSpinner.bind(this)
+		loaded: this.handleLoaded.bind(this)
 	});
 
 	// Add skybox
@@ -238,14 +241,23 @@ gt.App.prototype.hideSpinner = function() {
 	this.hideOverlay('loading');
 };
 
+gt.App.prototype.handleLoaded = function() {
+	this.hideSpinner();
+	this.loaded = true;
+};
+
 gt.App.prototype.handleBlur = function() {
-	this.showOverlay('paused');
-	this.disconnect();
+	if (gt.config.pauseOnBlur && this.loaded) {
+		this.showOverlay('paused');
+		this.disconnect();
+	}
 };
 
 gt.App.prototype.handleFocus = function() {
-	this.hideOverlay('paused');
-	this.reconnect();
+	if (gt.config.pauseOnBlur && this.loaded) {
+		this.hideOverlay('paused');
+		this.reconnect();
+	}
 };
 
 gt.App.prototype.handleGeolocationChange = function(pos) {

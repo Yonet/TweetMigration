@@ -25,6 +25,7 @@ body {
 	position: absolute;
 	top: 0;
 	right: 0;
+	z-index: 2; /* Position above overlays */
 
 	margin: 10px;
 
@@ -40,6 +41,10 @@ body {
 	font-family: sans-serif;
 }
 
+.gt_heatmapType {
+	opacity: 0.75; /* Fade out slightly so it doesn't detract from the visualization */
+}
+
 .gt_count {
 	font-weight: bold;
 	text-align: center;
@@ -49,7 +54,7 @@ body {
 .gt_overlay {
 	/* Fill the parent positioned-relative element */
 	position: absolute;
-	z-index: 100;
+	z-index: 1; /* Position below output */
 	top: 0;
 	left: 0;
 	bottom: 0;
@@ -108,7 +113,6 @@ Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
 .gt_overlay.hide {
 	-webkit-animation: gt_fadeOut 0.25s;
 	-webkit-animation-fill-mode: forwards;
-	z-index: -1;
 }
 
 .gt_loading {

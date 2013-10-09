@@ -6,6 +6,7 @@ var gt = {
 		cloudSpeed: 0.000005,
 		cameraDistance: 600,
 		debug: true,
+		pauseOnBlur: true,
 
 		heatmapStyle: 'clouds',
 
