@@ -1,10 +1,8 @@
 gt.App = function(options) {
 	this.el = options.el;
 
-	// Permanantly bind methods used as callbacks
+	// Permanantly bind animate so we don't have to call it in funny ways
 	this.animate = this.animate.bind(this);
-	this.add = this.add.bind(this);
-	this.handleWindowResize = this.handleWindowResize.bind(this);
 
 	// Hold markers
 	this.markers = [];
@@ -37,6 +35,17 @@ gt.App = function(options) {
 	this.output = document.createElement('div');
 	this.output.className = 'gt_output';
 	this.container.appendChild(this.output);
+
+	// Create an overlay
+	this.overlay = document.createElement('div');
+	this.overlay.className = 'gt_overlay';
+	this.overlay.style.display = 'none';
+	this.container.appendChild(this.overlay);
+
+	// Create the pause item
+	this.paused = document.createElement('div');
+	this.paused.className = 'gt_paused';
+	this.overlay.appendChild(this.paused);
 
 	// Create scene
 	var scene = this.scene = new THREE.Scene();
@@ -80,16 +89,31 @@ gt.App = function(options) {
 	// Add heatmap
 	this.heatmap = new gt.Heatmap({
 		scene: scene,
-		radius: gt.config.earthRadius + 1
+		radius: gt.config.earthRadius + 1,
+		size: 8,
+		intensity: 0.75,
+		doBlur: true,
+		decayFactor: 0.99999
 	});
 
 	// Add listeners
-	window.addEventListener('resize', this.handleWindowResize);
+	window.addEventListener('resize', this.handleWindowResize.bind(this));
+	window.addEventListener('blur', this.handleBlur.bind(this));
+	window.addEventListener('focus', this.handleFocus.bind(this));
 
 	this.connect();
 
 	// Start animation
 	this.animate(0);
+};
+
+gt.App.prototype.handleBlur = function() {
+	this.overlay.style.display = '';
+	this.disconnect();
+};
+gt.App.prototype.handleFocus = function() {
+	this.overlay.style.display = 'none';
+	this.reconnect();
 };
 
 gt.App.prototype.addStats = function() {
@@ -157,6 +181,14 @@ gt.App.prototype.connect = function() {
 
 	// Add markers when the server emits them
 	this.socket.on('marker', this.add.bind(this));
+};
+
+gt.App.prototype.reconnect = function() {
+	this.socket.socket.connect();
+};
+
+gt.App.prototype.disconnect = function() {
+	this.socket.socket.disconnect();
 };
 
 gt.App.prototype.add = function(data) {

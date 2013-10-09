@@ -1,8 +1,4 @@
 gt.Heatmap = function(options) {
-	// Required parameters
-	this.scene = options.scene;
-
-	// Optional parameters
 	gt.util.extend(this, this.constructor.defaults, options);
 
 	this.canvas = document.createElement('canvas');
@@ -38,9 +34,9 @@ gt.Heatmap = function(options) {
 };
 
 gt.Heatmap.defaults = {
+	width: 1024,
+	height: 512,
 	radius: 200,
-	width: 2048,
-	height: 1024,
 	size: 8,
 	intensity: 0.05,
 	decayFactor: 0.9999,
@@ -53,10 +49,16 @@ gt.Heatmap.prototype.add = function(data) {
 	this.heatmap.addPoint(pos.x, pos.y, this.size, this.intensity);
 
 	// Tell THREE to update the texture from the canvas
-	this.texture.needsUpdate = true;
+	// Commented out due to smooth hack
+	// this.texture.needsUpdate = true;
 };
 
 gt.Heatmap.prototype.update = function(timeDiff, time) {
+	// Smooth hack: In order to make the heatmap smoothly decay
+	// We must add a dummy point
+	this.heatmap.addPoint(0, 0, 0, 0);
+	this.texture.needsUpdate = true;
+
 	// TODO: Do blur and decay consistently for lower FPS
 	if (this.doBlur)
 		this.heatmap.blur();

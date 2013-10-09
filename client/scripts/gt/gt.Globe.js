@@ -5,7 +5,6 @@ gt.Globe = function(options) {
 	// Setup globe mesh
 	var globeGeometry = new THREE.SphereGeometry(this.radius, 40, 30);
 	var globeMaterial = new THREE.MeshPhongMaterial();
-	// globeMaterial.map = THREE.ImageUtils.loadTexture('/images/globe/earth_surface_2048.jpg'); // Lower res
 	globeMaterial.map = THREE.ImageUtils.loadTexture('/images/globe/earthmap4k.jpg');
 	// globeMaterial.map = THREE.ImageUtils.loadTexture('/images/globe/earthgrid.png'); // Lat/Long grid
 	globeMaterial.bumpMap = THREE.ImageUtils.loadTexture('/images/globe/earthbump4k.jpg');
