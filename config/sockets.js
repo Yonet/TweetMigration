@@ -9,8 +9,10 @@ module.exports = function(app, io) {
 
 	var markerQueue = [];
 
-	// Send tweets to connected clients a max of 1,000 times per second
+	// Send one tweet every sendDelay milliseconds
 	var sendDelay = 20;
+
+	// Adjust sendDelay to maintain a buffer of maxBufferSize
 	var maxBufferSize = 100;
 
 	function sendMarker() {
@@ -24,6 +26,7 @@ module.exports = function(app, io) {
 			controller.sendMarker(marker);
 
 			var bufferSize = markerQueue.length;
+
 			// Calcuate when to send next marker
 			if (bufferSize > maxBufferSize*1.05) {
 				sendDelay *= 0.999;
@@ -41,8 +44,7 @@ module.exports = function(app, io) {
 
 	// Stream tweets from Twitter
 	twit.stream('filter', {
-		locations: '-180,-90,180,90',
-
+		locations: '-180,-90,180,90' // Match any tweet with coordinates
 	}, function(stream) {
 		stream.on('data', function(data) {
 			var coordinates = null;
@@ -62,12 +64,14 @@ module.exports = function(app, io) {
 				return;
 			}
 
+			// Add the tweet to the queue
 			markerQueue.push({
 				user: data.user.screen_name,
 				tweet: data.text,
 				location: coordinates
 			});
 
+			// Start streaming to the client if the buffer is full
 			if (!started && markerQueue.length >= maxBufferSize) {
 				sendMarker();
 				started = true;
@@ -83,12 +87,10 @@ module.exports = function(app, io) {
 	// Define a socket controller
 	var controller = {};
 
+	// Send marker data to the client
 	controller.sendMarker = function( markerData) {
 		io.sockets.emit('marker', markerData);
 	};
 
 	return controller;
 };
-
-
-	
