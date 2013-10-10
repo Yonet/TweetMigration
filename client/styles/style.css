@@ -27,7 +27,7 @@ body {
 #fps, #ms,
 .gt_output,
 .gt_heatmapType {
-	z-index: 2; /* Position above overlays */
+	z-index: 1; /* Position below overlays */
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -137,7 +137,7 @@ body {
 .gt_overlay {
 	/* Fill the parent positioned-relative element */
 	position: absolute;
-	z-index: 1; /* Position below output */
+	z-index: 2; /* Position above output */
 	top: 0;
 	left: 0;
 	bottom: 0;
