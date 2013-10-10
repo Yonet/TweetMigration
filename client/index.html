@@ -24,15 +24,18 @@
 
 		<script id="gt_template" type="template">
 			<div class="gt_container">
-				<label class="gt_forSelect gt_top gt_right">
-					<select class="gt_heatmapType">
-						<option value="clouds">☁ Clouds</option>
-						<option value="lightning">↯ Lightning</option>
-						<option value="ozone">♨ Ozone</option>
-						<option value="decay">☠ Decay</option>
-					</select>
-				</label>
-				<div class="gt_output gt_count gt_top gt_left">0 tweets</div>
+				<div class="gt_layer gt_top gt_right">
+					<label class="gt_select">
+						<select class="gt_heatmapType">
+							<option value="clouds">☁ Clouds</option>
+							<option value="lightning">↯ Lightning</option>
+							<option value="ozone">♨ Ozone</option>
+							<option value="decay">☠ Decay</option>
+						</select>
+					</label>
+					<button class="gt_button gt_pauseButton gt_playing"></button>
+				</div>
+				<div class="gt_output gt_count gt_top gt_left">-</div>
 				<div class="gt_overlay">
 					<div class="gt_indicator gt_paused"></div>
 				</div>

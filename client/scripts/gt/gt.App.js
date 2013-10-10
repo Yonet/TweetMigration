@@ -4,6 +4,7 @@ gt.App = function(options) {
 
 	// Permanantly bind animate so we don't have to call it in funny ways
 	this.animate = this.animate.bind(this);
+	this.play = this.play.bind(this);
 
 	// Hold markers
 	this.markers = [];
@@ -18,6 +19,9 @@ gt.App = function(options) {
 	// Track loaded status
 	this.loaded = false;
 
+	// Track running status
+	this.running = true;
+
 	// Create a container
 	// Create an element for output
 	this.el.insertAdjacentHTML('beforeend', document.getElementById('gt_template').innerHTML);
@@ -28,6 +32,8 @@ gt.App = function(options) {
 	this.output = this.container.querySelector('.gt_output');
 	this.typeSelectContainer = this.container.querySelector('.gt_forSelect');
 	this.typeSelect = this.container.querySelector('.gt_heatmapType');
+	this.pauseButton = this.container.querySelector('.gt_pauseButton');
+	this.indicator = this.container.querySelector('.gt_indicator');
 
 	if (this.menus === false) {
 		this.typeSelectContainer.style.display = 'none';
@@ -98,7 +104,6 @@ gt.App = function(options) {
 		prefix: 'Purple_Nebula_'
 	});
 
-
 	// Add heatmap
 	this.heatmap = new gt.Heatmap({
 		scene: scene,
@@ -113,6 +118,7 @@ gt.App = function(options) {
 	window.addEventListener('resize', this.handleWindowResize.bind(this));
 	window.addEventListener('blur', this.handleBlur.bind(this));
 	window.addEventListener('focus', this.handleFocus.bind(this));
+	this.pauseButton.addEventListener('click', this.togglePause.bind(this))
 
 	this.connect();
 
@@ -158,8 +164,11 @@ gt.App.prototype.animate = function(time) {
 
 	// Update hooked functions
 	this.controls.update();
-	this.heatmap.update(timeDiff, time);
 	this.globe.update(timeDiff, time);
+
+	// Only update the heatmap if we're running
+	if (this.running)
+		this.heatmap.update(timeDiff, time);
 
 	// Re-align the sun every minute
 	if (time - this.lastSunAlignment > 1000*60) {
@@ -298,17 +307,42 @@ gt.App.prototype.handleLoaded = function() {
 	this.loaded = true;
 };
 
-gt.App.prototype.handleBlur = function() {
-	if (this.pauseOnBlur && this.loaded) {
+gt.App.prototype.togglePause = function() {
+	if (this.running)
+		this.pause();
+	else
+		this.play();
+}
+
+gt.App.prototype.pause = function() {
+	if (this.loaded) {
 		this.showOverlay('paused');
 		this.disconnect();
+		this.pauseButton.classList.remove('gt_playing');
+		this.running = false;
+		this.indicator.addEventListener('click', this.play);
+	}
+};
+
+gt.App.prototype.play = function() {
+	if (this.loaded) {
+		this.hideOverlay('paused');
+		this.reconnect();
+		this.pauseButton.classList.add('gt_playing');
+		this.indicator.removeEventListener('click', this.play);
+		this.running = true;
+	}
+};
+
+gt.App.prototype.handleBlur = function() {
+	if (this.pauseOnBlur) {
+		this.pause();
 	}
 };
 
 gt.App.prototype.handleFocus = function() {
-	if (this.pauseOnBlur && this.loaded) {
-		this.hideOverlay('paused');
-		this.reconnect();
+	if (this.pauseOnBlur) {
+		this.play();
 	}
 };
 
@@ -351,6 +385,6 @@ gt.App.prototype.addTestData = function() {
 
 gt.App.prototype.addStats = function() {
 	this.stats = new Stats();
-	this.stats.domElement.className = 'gt_stats gt_bottom gt_right';
+	this.stats.domElement.className = 'gt_stats gt_bottom gt_left';
 	this.container.appendChild(this.stats.domElement);
 };

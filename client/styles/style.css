@@ -17,6 +17,8 @@ body {
 	user-select: none;
 
 	cursor: crosshair;
+
+	font-family: Helvetica, sans-serif;
 }
 
 /* Prevent overflow due to canvas acting as inline */
@@ -26,20 +28,26 @@ body {
 
 #fps, #ms,
 .gt_output,
-.gt_heatmapType {
-	z-index: 1; /* Position below overlays */
-	position: absolute;
-	top: 0;
-	left: 0;
-
+.gt_heatmapType,
+.gt_button {
 	margin: 10px;
 
 	border-radius: 5px;
 	background: rgba(100, 100, 100, 0.50);
 }
 
+#fps, #ms,
+.gt_output,
+.gt_layer {
+	z-index: 1; /* Position below overlays */
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.gt_output,
 .gt_heatmapType,
-.gt_output {
+.gt_button {
 	padding: 10px;
 	min-width: 47px;
 
@@ -47,6 +55,23 @@ body {
 	font-family: Helvetica, sans-serif;
 	color: rgba(200, 200, 200, 0.65);
 	text-shadow: -1px -1px 0 rgba(0, 0, 0 ,0.25);
+}
+
+.gt_button {
+	border: none;
+	height: 38px;
+	line-height: 20px;
+}
+
+.gt_pauseButton:before {
+	content: '‣';
+	font-size: 40px;
+}
+
+.gt_pauseButton.gt_playing:before {
+	content: '❚❚';
+	font-size: 20px;
+	letter-spacing: 2px;
 }
 
 .gt_stats {
@@ -94,38 +119,19 @@ body {
 	font-weight: bold;
 }
 
-.gt_heatmapType {
-	position: static;
-	display: block;
-
-	box-sizing: border-box;
-	line-height: 25px;
-	height: 38px;
-	overflow: visible;
-
+.gt_select {
 	margin: 10px;
-
-	padding: 0px 10px;
-	padding-right: 32px;
-
-	border: none;
-
-	font-size: 20px;
-
-	cursor: pointer;
-	-webkit-appearance: none;
+	display: inline-block; /* Stack horizontally like text */
+	position: relative; /* Position the :before pseudo-element relative to us */
+	vertical-align: top; /* Line up correctly with buttons */
 }
 
-.gt_forSelect {
-	display: block;
-}
-
-.gt_forSelect:before {
+.gt_select:before {
 	display: block;
 	content: '⌵';
 	position: absolute;
-	top: 15px;
-	right: 22px;
+	top: 3px;
+	right: 12px;
 
 	color: rgb(120, 120, 120);
 	font-size: 20px;
@@ -146,6 +152,33 @@ body {
 	background: rgba(0, 0, 0, 0.5);
 
 	pointer-events: none; /* Let mouse clicks pass through */
+}
+
+.gt_select select {
+	position: static;
+	display: inline-block;
+
+	box-sizing: border-box;
+	line-height: 25px;
+	height: 38px;
+	overflow: visible;
+
+	margin: 0;
+
+	padding: 0px 10px;
+	padding-right: 32px;
+
+	border: none;
+
+	font-size: 20px;
+
+	cursor: pointer;
+	-webkit-appearance: none;
+}
+
+.gt_select + .gt_button {
+	/* Buttons following select menus should have less margin */
+	margin-left: 0;
 }
 
 /*
@@ -192,18 +225,29 @@ Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
 	margin-left: -50px;
 }
 
-.gt_paused:before,
+.gt_button,
+.gt_paused {
+	cursor: pointer;
+	pointer-events: auto;
+}
+
 .gt_paused:after {
-	content: '';
+	content: '‣';
 	display: block;
 	position: absolute;
 
-	width: 30px;
+	width: 100px;
 	height: 100px;
+	font-size: 200px;
+	line-height: 114px;
 
-	background: rgba(100, 100, 100, 0.75);
+	color: rgba(100, 100, 100, 0.75);
 
-	box-shadow: 0 0 5px solid rgba(0,0,0,0.5);
+	border-radius: 100px;
+	background-color: rgba(60, 60, 60, 0.7);
+	text-align: center;
+
+	text-shadow: 0 0 5px solid rgba(0,0,0,0.5);
 }
 
 .gt_paused:before {
