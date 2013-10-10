@@ -51,7 +51,15 @@ body {
 .gt_heatmapType {
 	opacity: 0.75; /* Fade out slightly so it doesn't detract from the visualization */
 
-	font-size: 20px;
+	border: none;
+	background: none;
+	-webkit-appearance: none;
+	width: auto;
+
+	cursor: pointer;
+
+	font-size: 16px;
+	color: rgba(200, 200, 200, 0.65);
 }
 
 .gt_overlay {
