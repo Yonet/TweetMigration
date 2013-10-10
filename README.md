@@ -1,6 +1,7 @@
 # Tweet Migration
 > A WebGL visualization of global Twitter activity
 
+
 ## Running
 
 1. Create a `config.json` file as described below, then run the following commands:
@@ -16,6 +17,7 @@
 	```
 	node server.js
 	```
+
 
 ## Configuration
 
@@ -58,7 +60,29 @@ The port to run the server on. Overridden by the `PORT` environment variable.
 }
 ```
 
+
 ## Credits
 
-* Concept, globe, and initial code by [Aysegul Yonet](http://aysegulyonet.com/)
-* [Earth textures](http://planetpixelemporium.com/earth.html) by James Hastings-Trew
+* Concept, globe, and initial code by [Aysegul Yonet]
+* [Earth textures] by James Hastings-Trew
+
+[Aysegul Yonet]: http://aysegulyonet.com/
+[Earth textures]: http://planetpixelemporium.com/earth.html
+
+
+## Technology
+
+* [three.js]: 3D library
+* [Socket.IO]: Client and server for WebSockets
+* [webgl-heatmap]: Heatmap drawn with WebGL shaders
+* [Node.js]: Server
+* [node-twitter]: Twitter library for Node.js
+* [HTML & CSS]: Menuing
+
+
+[three.js]: https://github.com/mrdoob/three.js/
+[Socket.IO]: http://socket.io/
+[webgl-heatmap]: https://github.com/pyalot/webgl-heatmap
+[Node.js]: http://nodejs.org/
+[node-twitter]: https://github.com/desmondmorris/node-twitter
+[HTML & CSS]: https://developer.mozilla.org/en-US/
