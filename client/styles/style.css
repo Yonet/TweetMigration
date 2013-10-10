@@ -28,8 +28,9 @@ body {
 
 #fps, #ms,
 .gt_output,
-.gt_heatmapType,
-.gt_button {
+.gt_select select,
+.gt_button,
+.gt_input {
 	margin: 10px;
 
 	border-radius: 5px;
@@ -45,8 +46,9 @@ body {
 	left: 0;
 }
 
+.gt_input,
 .gt_output,
-.gt_heatmapType,
+.gt_select select,
 .gt_button {
 	padding: 10px;
 	min-width: 47px;
@@ -119,6 +121,7 @@ body {
 	font-weight: bold;
 }
 
+.gt_input,
 .gt_select {
 	margin: 10px;
 	display: inline-block; /* Stack horizontally like text */
@@ -154,6 +157,7 @@ body {
 	pointer-events: none; /* Let mouse clicks pass through */
 }
 
+.gt_input,
 .gt_select select {
 	position: static;
 	display: inline-block;
@@ -166,7 +170,6 @@ body {
 	margin: 0;
 
 	padding: 0px 10px;
-	padding-right: 32px;
 
 	border: none;
 
@@ -176,9 +179,60 @@ body {
 	-webkit-appearance: none;
 }
 
+.gt_select select {
+	padding-right: 32px;
+}
+
 .gt_select + .gt_button {
 	/* Buttons following select menus should have less margin */
 	margin-left: 0;
+}
+
+.gt_input {
+	text-align: left;
+	height: 38px;
+
+	margin: 10px;
+
+	cursor: text;
+}
+
+/*
+Style placeholder text
+Via http://css-tricks.com/snippets/css/style-placeholder-text/
+*/
+.gt_input::-webkit-input-placeholder {
+   opacity: 0.35;
+}
+
+.gt_input:-moz-placeholder {
+   opacity: 0.35;
+}
+
+.gt_input::-moz-placeholder {
+   opacity: 0.35;
+}
+
+.gt_search {
+	position: relative;
+}
+.gt_search:before {
+	position: absolute;
+	top: 15px;
+	left: 20px;
+
+	content: '#';
+	display: block;
+	color: rgba(200, 200, 200, 0.5);
+	font-size: 25px;
+
+	pointer-events: none;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0 ,0.25);
+}
+
+.gt_search > .gt_input {
+	padding-left: 22px;
+	color: rgba(200, 200, 200, 0.575);
 }
 
 /*

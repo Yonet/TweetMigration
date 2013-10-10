@@ -281,7 +281,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	}
 
 	function onMouseDown( event ) {
-		if (event.target.tagName === 'SELECT') return;
+		if (event.target.tagName === 'SELECT' || event.target.tagName === 'INPUT' || event.target.tagName === 'BUTTON') return;
 
 		if ( scope.enabled === false ) { return; }
 		// event.preventDefault();
