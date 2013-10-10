@@ -47,7 +47,7 @@ The port to run the server on. Overridden by the `PORT` environment variable.
 
 ### Sample `config.json`
 
-```
+```json
 {
 	"consumer_key": "fsq4YbjfXuQWJRs01XatGR",
 	"consumer_secret": "lzXoLOGzxGYeItJ327BGSLcNmZcmPft62x0tHuZYmad",
@@ -57,3 +57,8 @@ The port to run the server on. Overridden by the `PORT` environment variable.
 	"port": 8080
 }
 ```
+
+## Credits
+
+* Concept, globe, and initial code by [Aysegul Yonet](http://aysegulyonet.com/)
+* [Earth textures](http://planetpixelemporium.com/earth.html) by James Hastings-Trew
