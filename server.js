@@ -36,6 +36,6 @@ require('./config/routes.js')(app);
 var socket = require('./config/sockets.js')(app, io);
 
 // Start server
-var port = process.env.port || config.port;
+var port = process.env.PORT || config.port;
 server.listen(port);
 _console.log('Server listening on port <b>%d</b>', port);
