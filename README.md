@@ -64,9 +64,11 @@ The port to run the server on. Overridden by the `PORT` environment variable.
 ## Credits
 
 * Concept, globe, and initial code by [Aysegul Yonet]
+* Heatmap and streaming server by [Larry Davis]
 * [Earth textures] by James Hastings-Trew
 
-[Aysegul Yonet]: http://aysegulyonet.com/
+[Larry David]: http://github.com/lazd
+[Aysegul Yonet]: hhttp://github.com/yonet
 [Earth textures]: http://planetpixelemporium.com/earth.html
 
 
@@ -79,10 +81,16 @@ The port to run the server on. Overridden by the `PORT` environment variable.
 * [node-twitter]: Twitter library for Node.js
 * [HTML & CSS]: Menuing
 
-
 [three.js]: https://github.com/mrdoob/three.js/
 [Socket.IO]: http://socket.io/
 [webgl-heatmap]: https://github.com/pyalot/webgl-heatmap
 [Node.js]: http://nodejs.org/
 [node-twitter]: https://github.com/desmondmorris/node-twitter
 [HTML & CSS]: https://developer.mozilla.org/en-US/
+
+
+# License
+
+[BSD license], Copyright &copy; 2013 Aysegul Yonet
+
+[BSD license]: https://github.com/lazd/TweetMigration/blob/master/LICENSE
