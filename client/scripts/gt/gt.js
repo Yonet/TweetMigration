@@ -36,7 +36,7 @@ var gt = {
 				doBlur: false,
 				decayFactor: 1/133
 			},
-			decay: { // Cumillative (holes)
+			fire: { // Cumillative (holes)
 				fps: 32,
 				size: 20,
 				intensity: 0.03,

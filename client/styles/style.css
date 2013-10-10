@@ -56,24 +56,15 @@ body {
 	text-align: center;
 	font-family: Helvetica, sans-serif;
 	color: rgba(200, 200, 200, 0.65);
-	text-shadow: -1px -1px 0 rgba(0, 0, 0 ,0.25);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0 ,0.25);
 }
 
 .gt_button {
 	border: none;
 	height: 38px;
-	line-height: 20px;
-}
 
-.gt_pauseButton:before {
-	content: '‣';
-	font-size: 40px;
-}
-
-.gt_pauseButton.gt_playing:before {
-	content: '❚❚';
-	font-size: 20px;
-	letter-spacing: 2px;
+	font-size: 16px;
+	line-height: 15px;
 }
 
 .gt_stats {
@@ -131,14 +122,13 @@ body {
 
 .gt_select:before {
 	display: block;
-	content: '⌵';
 	position: absolute;
-	top: 3px;
-	right: 12px;
+	top: 7px;
+	right: 7px;
 
 	color: rgb(120, 120, 120);
-	font-size: 20px;
-	text-shadow: -1px -1px 0 rgba(0, 0, 0 ,0.25);
+	font-size: 22px;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0 ,0.25);
 
 	pointer-events: none; /* Let mouse clicks pass through */
 }
@@ -180,9 +170,10 @@ body {
 }
 
 .gt_select select {
-	padding-right: 32px;
+	padding-right: 38px;
 }
 
+.gt_input + .gt_button,
 .gt_select + .gt_button {
 	/* Buttons following select menus should have less margin */
 	margin-left: 0;
@@ -195,6 +186,11 @@ body {
 	margin: 10px;
 
 	cursor: text;
+}
+
+.gt_selected {
+	color: rgb(43, 116, 224);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 /*
@@ -227,7 +223,7 @@ Via http://css-tricks.com/snippets/css/style-placeholder-text/
 	font-size: 25px;
 
 	pointer-events: none;
-	text-shadow: -1px -1px 0 rgba(0, 0, 0 ,0.25);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0 ,0.25);
 }
 
 .gt_search > .gt_input {
@@ -251,19 +247,17 @@ Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
 }
 
 .gt_loading {
-	-webkit-animation: gt_rotate 2s linear infinite;
-	padding-right: 20px;
+	-webkit-animation: gt_rotate 1.75s linear infinite;
 }
 
-.gt_loading:after {
+.gt_loading {
 	display: block;
-	content: '࿂';
 
 	text-align: center;
 	color: rgba(100, 100, 100, 0.75);
 	font-size: 200px;
-	font-family: Helvetica;
-	line-height: 100px;
+
+	opacity: 0.5;
 
 	text-shadow: 0 0 5px solid rgba(0,0,0,0.5);
 }
@@ -273,10 +267,10 @@ Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	height: 100px;
-	width: 100px;
-	margin-top: -50px;
-	margin-left: -50px;
+	height: 200px;
+	width: 200px;
+	margin-top: -100px;
+	margin-left: -100px;
 }
 
 .gt_button,
@@ -290,6 +284,7 @@ Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
 	display: block;
 	position: absolute;
 
+	margin: 50px;
 	width: 100px;
 	height: 100px;
 	font-size: 200px;

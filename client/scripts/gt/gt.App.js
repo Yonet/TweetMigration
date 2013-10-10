@@ -33,6 +33,7 @@ gt.App = function(options) {
 	this.typeSelectContainer = this.container.querySelector('.gt_forSelect');
 	this.typeSelect = this.container.querySelector('.gt_heatmapType');
 	this.pauseButton = this.container.querySelector('.gt_pauseButton');
+	this.locationButton = this.container.querySelector('.gt_locationButton');
 	this.indicator = this.container.querySelector('.gt_indicator');
 
 	if (this.menus === false) {
@@ -81,6 +82,8 @@ gt.App = function(options) {
 	cameraLight.position.set(0, 0, this.cameraDistance);
 	camera.add(cameraLight);
 
+	this.setSunPosition();
+
 	// Add controls
 	// this.controls = new THREE.TrackballControls(this.camera, this.el);
 	this.controls = new THREE.OrbitControls(this.camera, this.el);
@@ -119,20 +122,21 @@ gt.App = function(options) {
 	window.addEventListener('blur', this.handleBlur.bind(this));
 	window.addEventListener('focus', this.handleFocus.bind(this));
 	this.pauseButton.addEventListener('click', this.togglePause.bind(this))
+	this.locationButton.addEventListener('click', this.toggleGPS.bind(this))
 
+	// Connect to server
 	this.connect();
+
+	// Watch GPS position
+	if (this.watchGPS)
+		this.startWatchingGPS();
+
+	// Add debug information
+	if (this.debug || this.fps)
+		this.addStats();
 
 	// Start animation
 	this.animate(0);
-
-	this.setSunPosition();
-
-	// Ask for and watch user's position
-	navigator.geolocation.watchPosition(this.handleGeolocationChange.bind(this));
-
-	// Addd debug information
-	if (this.debug || this.fps)
-		this.addStats();
 };
 
 gt.App.defaults = {
@@ -146,6 +150,8 @@ gt.App.defaults = {
 	cameraDistance: 600,
 	debug: false,
 	pauseOnBlur: true,
+
+	watchGPS: true,
 
 	itemName: 'item',
 	itemNamePlural: 'items',
@@ -214,6 +220,18 @@ gt.App.prototype.setSunPosition = function(dayOfYear, utcHour) {
 	this.directionalLight.position.copy(sunPos);
 
 	// console.log('%s on %d day of year: Sun at longitude %s, angle %s', utcHour.toFixed(3), dayOfYear, sunLong.toFixed(3), sunAngle.toFixed(3));
+};
+
+gt.App.prototype.startWatchingGPS = function() {
+	// Ask for and watch user's position
+	this._geoWatchID = navigator.geolocation.watchPosition(this.handleGeolocationChange.bind(this));
+	this.watchGPS = true;
+};
+
+gt.App.prototype.stopWatchingGPS = function() {
+		this.locationButton.classList.remove('gt_selected');
+	navigator.geolocation.clearWatch(this._geoWatchID);
+	this.watchGPS = false;
 };
 
 gt.App.prototype.setStyleFromHash = function(styleName) {
@@ -295,11 +313,11 @@ gt.App.prototype.hideOverlay = function(type) {
 
 // Handlers
 gt.App.prototype.showSpinner = function() {
-	this.showOverlay('loading');
+	this.showOverlay('loading gt_icon-spinner');
 };
 
 gt.App.prototype.hideSpinner = function() {
-	this.hideOverlay('loading');
+	this.hideOverlay('loading gt_icon-spinner');
 };
 
 gt.App.prototype.handleLoaded = function() {
@@ -318,7 +336,8 @@ gt.App.prototype.pause = function() {
 	if (this.loaded) {
 		this.showOverlay('paused');
 		this.disconnect();
-		this.pauseButton.classList.remove('gt_playing');
+		this.pauseButton.classList.remove('gt_icon-pause');
+		this.pauseButton.classList.add('gt_icon-play');
 		this.running = false;
 		this.indicator.addEventListener('click', this.play);
 	}
@@ -328,7 +347,8 @@ gt.App.prototype.play = function() {
 	if (this.loaded) {
 		this.hideOverlay('paused');
 		this.reconnect();
-		this.pauseButton.classList.add('gt_playing');
+		this.pauseButton.classList.remove('gt_icon-play');
+		this.pauseButton.classList.add('gt_icon-pause');
 		this.indicator.removeEventListener('click', this.play);
 		this.running = true;
 	}
@@ -346,8 +366,20 @@ gt.App.prototype.handleFocus = function() {
 	}
 };
 
+gt.App.prototype.toggleGPS = function() {
+	if (this.watchGPS) {
+		this.stopWatchingGPS();
+	}
+	else {
+		this.startWatchingGPS();
+	}
+};
+
 gt.App.prototype.handleGeolocationChange = function(pos) {
-	this.rotateTo(pos);
+	if (this.watchGPS) {
+		this.rotateTo(pos);
+		this.locationButton.classList.add('gt_selected');
+	}
 };
 
 gt.App.prototype.handleWindowResize = function() {
