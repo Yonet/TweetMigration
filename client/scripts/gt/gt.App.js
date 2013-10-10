@@ -25,10 +25,12 @@ gt.App = function(options) {
 	this.overlay = this.container.querySelector('.gt_overlay');
 	this.indicator = this.container.querySelector('.gt_indicator');
 	this.output = this.container.querySelector('.gt_output');
+	this.typeSelect = this.container.querySelector('.gt_heatmapType');
 
 	// Listen to visualization type change
-	this.container.querySelector('.gt_heatmapType').addEventListener('change', function(evt) {
-		this.heatmap.set(gt.config.heatmap[evt.target.value]);
+	this.typeSelect.addEventListener('change', function(evt) {
+		var style = evt.target.value;
+		this.setStyle(style);
 	}.bind(this));
 
 	// Get width of element
@@ -86,20 +88,18 @@ gt.App = function(options) {
 		prefix: 'Purple_Nebula_'
 	});
 
-	var heatmapConfig = gt.config.heatmap[gt.config.heatmapStyle];
 
 	// Add heatmap
 	this.heatmap = new gt.Heatmap({
 		scene: scene,
-		radius: gt.config.earthRadius + 1,
-		fps: heatmapConfig.fps,
-		size: heatmapConfig.size,
-		intensity: heatmapConfig.intensity,
-		doBlur: heatmapConfig.doBlur,
-		decayFactor: heatmapConfig.decayFactor
+		radius: gt.config.earthRadius + 1
 	});
 
+	// Set default style
+	this.setStyleFromHash();
+
 	// Add listeners
+	window.addEventListener('hashchange', this.setStyleFromHash.bind(this));
 	window.addEventListener('resize', this.handleWindowResize.bind(this));
 	window.addEventListener('blur', this.handleBlur.bind(this));
 	window.addEventListener('focus', this.handleFocus.bind(this));
@@ -148,6 +148,10 @@ gt.App.prototype.animate = function(time) {
 		this.stats.update();
 };
 
+gt.App.prototype.render = function() {
+	this.renderer.render(this.scene, this.camera);
+};
+
 gt.App.prototype.setSunPosition = function(dayOfYear, utcHour) {
 	if (typeof dayOfYear === 'undefined' || typeof dayOfYear === 'undefined') {
 		var d = new Date();
@@ -171,8 +175,17 @@ gt.App.prototype.setSunPosition = function(dayOfYear, utcHour) {
 	// console.log('%s on %d day of year: Sun at longitude %s, angle %s', utcHour.toFixed(3), dayOfYear, sunLong.toFixed(3), sunAngle.toFixed(3));
 };
 
-gt.App.prototype.render = function() {
-	this.renderer.render(this.scene, this.camera);
+gt.App.prototype.setStyleFromHash = function(styleName) {
+	var style = gt.util.getHashArgs().style;
+	if (!style)
+		style = gt.config.heatmapStyle;
+	this.setStyle(style);
+};
+
+gt.App.prototype.setStyle = function(styleName) {
+	this.typeSelect.value = styleName;
+	this.heatmap.set(gt.config.heatmap[styleName]);
+	window.location.hash='#style='+styleName;
 };
 
 // Marker management

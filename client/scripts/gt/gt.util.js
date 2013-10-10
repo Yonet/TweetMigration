@@ -49,6 +49,18 @@ gt.util = {
 		return date.getTime()/1000/60/60/24 % 365;
 	},
 
+	getHashArgs: function() {
+		var args = {};
+		var argString = window.location.hash.replace(/^#/, '');
+		var argPars = argString.split('&');
+		argPars.forEach(function(argPair) {
+			var argParts = argPair.split('=');
+			args[argParts[0]] = argParts[1];
+		});
+
+		return args;
+	},
+
 	extend: function() {
 		var objs = arguments;
 		var result = objs[0];
