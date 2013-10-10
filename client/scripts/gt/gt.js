@@ -6,7 +6,7 @@ var gt = {
 		cloudSpeed: 0.000003,
 		cameraDistance: 500,
 
-		debug: true,
+		debug: false,
 		pauseOnBlur: false,
 
 		itemName: 'tweet',
