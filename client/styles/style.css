@@ -24,42 +24,114 @@ body {
 	display: block;
 }
 
-.gt_output {
+#fps, #ms,
+.gt_output,
+.gt_heatmapType {
+	z-index: 2; /* Position above overlays */
 	position: absolute;
 	top: 0;
-	right: 0;
-	z-index: 2; /* Position above overlays */
+	left: 0;
 
 	margin: 10px;
 
+	border-radius: 5px;
+	background: rgba(100, 100, 100, 0.50);
+}
+
+.gt_heatmapType,
+.gt_output {
 	padding: 10px;
 	min-width: 47px;
 
-	background: rgba(100, 100, 100, 0.50);
-
-	border: 1px solid rgba(255, 255, 255, 0.10);
-	border-radius: 5px;
-	box-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
-
 	text-align: center;
-	font-weight: bold;
-	font-family: sans-serif;
+	font-family: Helvetica, sans-serif;
 	color: rgba(200, 200, 200, 0.65);
-	text-shadow: -1px -1px 0 rgba(0, 0 ,0 ,0.25);
+	text-shadow: -1px -1px 0 rgba(0, 0, 0 ,0.25);
+}
+
+.gt_stats {
+	position: absolute !important;
+	height: 52px;
+	width: 96px !important;
+	opacity: 1 !important;
+	opacity: 0.55 !important;
+}
+
+#fps, #ms {
+	/*position: relative !important;*/
+	padding: 0 !important;
+	overflow: hidden;
+	background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+#fpsText, #msText {
+	position: absolute;
+	z-index: 1;
+	top: 2px;
+	left: 4px;
+
+	width: 1.125em !important;
+	overflow: hidden;
+	white-space: nowrap;
+
+	font-family: monospace !important;
+	font-size: 12px !important;
+	font-weight: normal !important;
+	color: rgba(255, 255, 255, 0.5) !important;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+#fpsGraph, #msGraph {
+	border-radius: 3px;
+	background-color: rgb(50, 120, 170) !important;
+}
+
+#fpsGraph > span, #msGraph > span {
+	background-color: rgb(100, 100, 100) !important;
+}
+
+.gt_count {
+	font-weight: bold;
 }
 
 .gt_heatmapType {
-	opacity: 0.75; /* Fade out slightly so it doesn't detract from the visualization */
+	position: static;
+	display: block;
+
+	box-sizing: border-box;
+	line-height: 25px;
+	height: 38px;
+	overflow: visible;
+
+	margin: 10px;
+
+	padding: 0px 10px;
+	padding-right: 32px;
 
 	border: none;
-	background: none;
-	-webkit-appearance: none;
-	width: auto;
+
+	font-size: 20px;
 
 	cursor: pointer;
+	-webkit-appearance: none;
+}
 
-	font-size: 16px;
-	color: rgba(200, 200, 200, 0.65);
+.gt_forSelect {
+	display: block;
+}
+
+.gt_forSelect:before {
+	display: block;
+	content: '⌵';
+	position: absolute;
+	top: 15px;
+	right: 22px;
+
+	color: rgb(120, 120, 120);
+	font-size: 20px;
+	text-shadow: -1px -1px 0 rgba(0, 0, 0 ,0.25);
+
+	pointer-events: none; /* Let mouse clicks pass through */
 }
 
 .gt_overlay {
@@ -72,46 +144,11 @@ body {
 	right: 0;
 
 	background: rgba(0, 0, 0, 0.5);
-}
 
-/* Keyframes per https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes */
-@-webkit-keyframes gt_fadeIn {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-@-webkit-keyframes gt_fadeOut {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-
-@-webkit-keyframes gt_rotate {
-	0% {
-		-webkit-transform: rotate(0);
-	}
-	100% {
-		-webkit-transform: rotate(360deg);
-	}
+	pointer-events: none; /* Let mouse clicks pass through */
 }
 
 /*
-@-webkit-keyframes gt_fadeOut {
-	0% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
-}
-
 Include value `forwards` in animation property to stop at last frame instead of returning to default
 Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
 */
@@ -177,29 +214,54 @@ Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
 	left: 0;
 }
 
-.gt_output label {
-	display: block;
-}
-.gt_output input {
-	vertical-align: top;
-}
-
 .gt_top {
+	position: absolute;
 	bottom: auto;
 	top: 0;
 }
 
 .gt_right {
+	position: absolute;
 	left: auto;
 	right: 0;
 }
 
 .gt_bottom {
+	position: absolute;
 	top: auto;
 	bottom: 0;
 }
 
 .gt_left {
+	position: absolute;
 	right: auto;
 	left: 0;
+}
+
+/* Keyframes per https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes */
+@-webkit-keyframes gt_fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@-webkit-keyframes gt_fadeOut {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes gt_rotate {
+	0% {
+		-webkit-transform: rotate(0);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
 }

@@ -1,5 +1,6 @@
 gt.App = function(options) {
-	this.el = options.el;
+	gt.util.extend(this, gt.App.defaults, options);
+	this.el = (this.el && this.el.nodeType && this.el) || (this.el && document.querySelector(this.el)) || document.body;
 
 	// Permanantly bind animate so we don't have to call it in funny ways
 	this.animate = this.animate.bind(this);
@@ -25,7 +26,16 @@ gt.App = function(options) {
 	this.overlay = this.container.querySelector('.gt_overlay');
 	this.indicator = this.container.querySelector('.gt_indicator');
 	this.output = this.container.querySelector('.gt_output');
+	this.typeSelectContainer = this.container.querySelector('.gt_forSelect');
 	this.typeSelect = this.container.querySelector('.gt_heatmapType');
+
+	if (this.menus === false) {
+		this.typeSelectContainer.style.display = 'none';
+	}
+
+	if (this.count === false) {
+		this.output.style.display = 'none';
+	}
 
 	// Listen to visualization type change
 	this.typeSelect.addEventListener('change', function(evt) {
@@ -62,7 +72,7 @@ gt.App = function(options) {
 	scene.add(this.ambientLight);
 
 	var cameraLight = new THREE.PointLight(0xFFFFFF, 1, 1500);
-	cameraLight.position.set(0, 0, gt.config.cameraDistance);
+	cameraLight.position.set(0, 0, this.cameraDistance);
 	camera.add(cameraLight);
 
 	// Add controls
@@ -75,9 +85,9 @@ gt.App = function(options) {
 	// Add globe
 	this.globe = new gt.Globe({
 		scene: scene,
-		radius: gt.config.earthRadius,
-		cloudRadius: gt.config.cloudRadius,
-		cloudSpeed: gt.config.cloudSpeed,
+		radius: this.earthRadius,
+		cloudRadius: this.cloudRadius,
+		cloudSpeed: this.cloudSpeed,
 		loaded: this.handleLoaded.bind(this)
 	});
 
@@ -92,7 +102,7 @@ gt.App = function(options) {
 	// Add heatmap
 	this.heatmap = new gt.Heatmap({
 		scene: scene,
-		radius: gt.config.earthRadius + 1
+		radius: this.earthRadius + 1
 	});
 
 	// Set default style
@@ -115,8 +125,30 @@ gt.App = function(options) {
 	navigator.geolocation.watchPosition(this.handleGeolocationChange.bind(this));
 
 	// Addd debug information
-	if (gt.config.debug)
+	if (this.debug || this.fps)
 		this.addStats();
+};
+
+gt.App.defaults = {
+	fps: false,
+	menus: true,
+	count: true,
+	earthRadius: 200,
+	markerRadius: 200,
+	cloudRadius: 205,
+	cloudSpeed: 0.000003,
+	cameraDistance: 600,
+	debug: false,
+	pauseOnBlur: true,
+
+	itemName: 'item',
+	itemNamePlural: 'items',
+
+	heatmapStyle: 'default',
+
+	heatmapStyles: {
+		default: {}
+	}
 };
 
 // Animation
@@ -178,13 +210,13 @@ gt.App.prototype.setSunPosition = function(dayOfYear, utcHour) {
 gt.App.prototype.setStyleFromHash = function(styleName) {
 	var style = gt.util.getHashArgs().style;
 	if (!style)
-		style = gt.config.heatmapStyle;
+		style = this.heatmapStyle;
 	this.setStyle(style);
 };
 
 gt.App.prototype.setStyle = function(styleName) {
 	this.typeSelect.value = styleName;
-	this.heatmap.set(gt.config.heatmap[styleName]);
+	this.heatmap.set(this.heatmapStyles[styleName]);
 	window.location.hash='#style='+styleName;
 };
 
@@ -192,7 +224,7 @@ gt.App.prototype.setStyle = function(styleName) {
 gt.App.prototype.add = function(data) {
 	this.count++;
 
-	this.countEl.innerText = this.count.toLocaleString()+' tweets';
+	this.countEl.innerText = this.count.toLocaleString()+' '+(this.count === 1 ? this.itemName : this.itemNamePlural || this.itemName || 'items');
 
 	this.heatmap.add(data);
 	// this.addMarker(data); // Markers are very, very slow
@@ -204,7 +236,7 @@ gt.App.prototype.addMarker = function(data) {
 		user: data.user,
 		tweet: data.tweet,
 		location: data.location,
-		radius: gt.config.markerRadius,
+		radius: this.markerRadius,
 		scene: this.scene
 	});
 
@@ -214,7 +246,7 @@ gt.App.prototype.addMarker = function(data) {
 
 gt.App.prototype.rotateTo = function(pos) {
 	// TODO: Animate rotation smoothly
-	this.camera.position = gt.util.latLongToVector3(pos.coords.latitude, pos.coords.longitude, gt.config.cameraDistance);
+	this.camera.position = gt.util.latLongToVector3(pos.coords.latitude, pos.coords.longitude, this.cameraDistance);
 	this.camera.lookAt(this.scene.position);
 };
 
@@ -267,14 +299,14 @@ gt.App.prototype.handleLoaded = function() {
 };
 
 gt.App.prototype.handleBlur = function() {
-	if (gt.config.pauseOnBlur && this.loaded) {
+	if (this.pauseOnBlur && this.loaded) {
 		this.showOverlay('paused');
 		this.disconnect();
 	}
 };
 
 gt.App.prototype.handleFocus = function() {
-	if (gt.config.pauseOnBlur && this.loaded) {
+	if (this.pauseOnBlur && this.loaded) {
 		this.hideOverlay('paused');
 		this.reconnect();
 	}
@@ -319,7 +351,6 @@ gt.App.prototype.addTestData = function() {
 
 gt.App.prototype.addStats = function() {
 	this.stats = new Stats();
-	this.stats.domElement.style.position = 'absolute';
-	this.stats.domElement.style.top = '0px';
+	this.stats.domElement.className = 'gt_stats gt_bottom gt_right';
 	this.container.appendChild(this.stats.domElement);
 };

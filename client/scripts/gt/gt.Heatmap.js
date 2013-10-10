@@ -39,11 +39,11 @@ gt.Heatmap.defaults = {
 	radius: 200,
 	width: 1024,
 	height: 512,
-	fps: 18,
-	size: 10,
-	intensity: 1,
-	decayFactor: 1/1000,
-	doBlur: false
+	fps: 32,
+	size: 20,
+	intensity: 0.03,
+	doBlur: false,
+	decayFactor: 0
 };
 
 gt.Heatmap.prototype.set = function(options) {

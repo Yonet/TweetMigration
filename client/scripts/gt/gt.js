@@ -3,47 +3,49 @@ var gt = {
 		earthRadius: 200,
 		markerRadius: 200,
 		cloudRadius: 205,
-		cloudSpeed: 0.000005,
-		cameraDistance: 600,
+		cloudSpeed: 0.000003,
+		cameraDistance: 500,
+
 		debug: true,
-		pauseOnBlur: true,
+		pauseOnBlur: false,
+
+		itemName: 'tweet',
+		itemNamePlural: 'tweets',
 
 		heatmapStyle: 'clouds',
 
-		heatmap: {
+		heatmapStyles: {
 			clouds: { // Real time cumillative (clouds)
-				fps: 20,
-				size: 8.50,
+				fps: 32,
+				size: 9,
 				intensity: 0.33,
 				doBlur: true,
-				decayFactor: 1/25000,
+				decayFactor: 1/100000000,
 			},
-			lightning: { // Real time (lightning) 
+			lightning: { // Real time (flashes)
 				fps: 32,
 				size: 8,
-				intensity: 0.55,
-				doBlur: true,
-				decayFactor: 1/100
+				intensity: 0.85,
+				doBlur: false,
+				decayFactor: 1/10
 			},
-			holes: { // Cumillative (holes)
-				fps: 24,
-				size: 20,
+			ozone: { // Cumillative decay (repairing holes)
+				fps: 32,
+				size: 15,
 				intensity: 0.15,
 				doBlur: false,
-				decayFactor: 0,
+				decayFactor: 1/133
 			},
-			holes_repair: { // Cumillative decay (repairing holes)
-				fps: 24,
+			decay: { // Cumillative (holes)
+				fps: 32,
 				size: 20,
-				intensity: 0.15,
+				intensity: 0.03,
 				doBlur: false,
-				decayFactor: 1/100
+				decayFactor: 0
 			}
 		},
 	},
 	init: function() {
-		gt.app = new gt.App({
-			el: document.body
-		});
+		gt.app = new gt.App(gt.config);
 	}
 };
