@@ -213,11 +213,18 @@ gt.App.prototype.connect = function() {
 };
 
 gt.App.prototype.reconnect = function() {
-	this.socket.socket.connect();
+	this.socket.socket.reconnect();
 };
 
 gt.App.prototype.disconnect = function() {
-	this.socket.disconnect();
+	// If we're in the proces of connecting
+	if (this.socket.socket.connecting || this.socket.socket.reconnecting) {
+		// Poll until we can successfully disconnect
+		setTimeout(this.disconnect.bind(this), 100);
+	}
+	else {
+		this.socket.socket.disconnect();
+	}
 };
 
 gt.App.prototype.showOverlay = function(type) {
