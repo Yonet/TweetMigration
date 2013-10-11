@@ -67,7 +67,7 @@ The port to run the server on. Overridden by the `PORT` environment variable.
 * Heatmap and streaming server by [Larry Davis]
 * [Earth textures] by James Hastings-Trew
 
-[Larry David]: http://github.com/lazd
+[Larry Davis]: http://github.com/lazd
 [Aysegul Yonet]: hhttp://github.com/yonet
 [Earth textures]: http://planetpixelemporium.com/earth.html
 
