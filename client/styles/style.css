@@ -1,13 +1,360 @@
 html {
-        height: 100%;
-      }
+	overflow: hidden
+}
 body {
-  margin: 0;
-  padding: 0;
-  background: #000000;
-  color: #ffffff;
-  font-family: sans-serif;
-  font-size: 13px;
-  line-height: 20px;
-  height: 100%;
+	margin: 0;
+}
+
+.gt_container {
+	position: relative;
+	background: black;
+
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+
+	cursor: crosshair;
+
+	font-family: Helvetica, sans-serif;
+}
+
+/* Prevent overflow due to canvas acting as inline */
+.gt_canvas {
+	display: block;
+}
+
+#fps, #ms,
+.gt_output,
+.gt_select select,
+.gt_button,
+.gt_input {
+	margin: 10px;
+
+	border-radius: 5px;
+	background: rgba(100, 100, 100, 0.50);
+}
+
+#fps, #ms,
+.gt_output,
+.gt_layer {
+	z-index: 1; /* Position below overlays */
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.gt_input,
+.gt_output,
+.gt_select select,
+.gt_button {
+	padding: 10px;
+	min-width: 47px;
+
+	text-align: center;
+	font-family: Helvetica, sans-serif;
+	color: rgba(200, 200, 200, 0.65);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0 ,0.25);
+}
+
+.gt_button {
+	border: none;
+	height: 38px;
+
+	font-size: 16px;
+	line-height: 15px;
+}
+
+.gt_stats {
+	position: absolute !important;
+	height: 52px;
+	width: 96px !important;
+	opacity: 1 !important;
+	opacity: 0.55 !important;
+}
+
+#fps, #ms {
+	/*position: relative !important;*/
+	padding: 0 !important;
+	overflow: hidden;
+	background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+#fpsText, #msText {
+	position: absolute;
+	z-index: 1;
+	top: 2px;
+	left: 4px;
+
+	width: 1.125em !important;
+	overflow: hidden;
+	white-space: nowrap;
+
+	font-family: monospace !important;
+	font-size: 12px !important;
+	font-weight: normal !important;
+	color: rgba(255, 255, 255, 0.5) !important;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+}
+
+#fpsGraph, #msGraph {
+	border-radius: 3px;
+	background-color: rgb(50, 120, 170) !important;
+}
+
+#fpsGraph > span, #msGraph > span {
+	background-color: rgb(100, 100, 100) !important;
+}
+
+.gt_count {
+	font-weight: bold;
+}
+
+.gt_input,
+.gt_select {
+	margin: 10px;
+	display: inline-block; /* Stack horizontally like text */
+	position: relative; /* Position the :before pseudo-element relative to us */
+	vertical-align: top; /* Line up correctly with buttons */
+}
+
+.gt_select:before {
+	display: block;
+	position: absolute;
+	top: 7px;
+	right: 7px;
+
+	color: rgb(120, 120, 120);
+	font-size: 22px;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0 ,0.25);
+
+	pointer-events: none; /* Let mouse clicks pass through */
+}
+
+.gt_overlay {
+	/* Fill the parent positioned-relative element */
+	position: absolute;
+	z-index: 2; /* Position above output */
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+
+	background: rgba(0, 0, 0, 0.5);
+
+	pointer-events: none; /* Let mouse clicks pass through */
+}
+
+.gt_input,
+.gt_select select {
+	position: static;
+	display: inline-block;
+
+	box-sizing: border-box;
+	line-height: 25px;
+	height: 38px;
+	overflow: visible;
+
+	margin: 0;
+
+	padding: 0px 10px;
+
+	border: none;
+
+	font-size: 20px;
+
+	cursor: pointer;
+	-webkit-appearance: none;
+}
+
+.gt_select select {
+	padding-right: 38px;
+}
+
+.gt_input + .gt_button,
+.gt_select + .gt_button {
+	/* Buttons following select menus should have less margin */
+	margin-left: 0;
+}
+
+.gt_input {
+	text-align: left;
+	height: 38px;
+
+	margin: 10px;
+
+	cursor: text;
+}
+
+.gt_selected {
+	color: rgb(43, 116, 224);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/*
+Style placeholder text
+Via http://css-tricks.com/snippets/css/style-placeholder-text/
+*/
+.gt_input::-webkit-input-placeholder {
+   opacity: 0.35;
+}
+
+.gt_input:-moz-placeholder {
+   opacity: 0.35;
+}
+
+.gt_input::-moz-placeholder {
+   opacity: 0.35;
+}
+
+.gt_search {
+	position: relative;
+}
+.gt_search:before {
+	position: absolute;
+	top: 15px;
+	left: 20px;
+
+	content: '#';
+	display: block;
+	color: rgba(200, 200, 200, 0.5);
+	font-size: 25px;
+
+	pointer-events: none;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0 ,0.25);
+}
+
+.gt_search > .gt_input {
+	padding-left: 22px;
+	color: rgba(200, 200, 200, 0.575);
+}
+
+/*
+Include value `forwards` in animation property to stop at last frame instead of returning to default
+Via http://stackoverflow.com/questions/9991523/hide-div-after-css3-animation
+*/
+
+.gt_overlay {
+	-webkit-animation: gt_fadeIn 0.25s;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.gt_overlay.hide {
+	-webkit-animation: gt_fadeOut 0.25s;
+	-webkit-animation-fill-mode: forwards;
+}
+
+.gt_loading {
+	-webkit-animation: gt_rotate 1.75s linear infinite;
+}
+
+.gt_loading {
+	display: block;
+
+	text-align: center;
+	color: rgba(100, 100, 100, 0.75);
+	font-size: 200px;
+
+	opacity: 0.5;
+
+	text-shadow: 0 0 5px solid rgba(0,0,0,0.5);
+}
+
+.gt_loading,
+.gt_paused {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	height: 200px;
+	width: 200px;
+	margin-top: -100px;
+	margin-left: -100px;
+}
+
+.gt_button,
+.gt_paused {
+	cursor: pointer;
+	pointer-events: auto;
+}
+
+.gt_paused:after {
+	content: '‣';
+	display: block;
+	position: absolute;
+
+	margin: 50px;
+	width: 100px;
+	height: 100px;
+	font-size: 200px;
+	line-height: 114px;
+
+	color: rgba(100, 100, 100, 0.75);
+
+	border-radius: 100px;
+	background-color: rgba(60, 60, 60, 0.7);
+	text-align: center;
+
+	text-shadow: 0 0 5px solid rgba(0,0,0,0.5);
+}
+
+.gt_paused:before {
+	right: 0;
+}
+
+.gt_paused:after {
+	left: 0;
+}
+
+.gt_top {
+	position: absolute;
+	bottom: auto;
+	top: 0;
+}
+
+.gt_right {
+	position: absolute;
+	left: auto;
+	right: 0;
+}
+
+.gt_bottom {
+	position: absolute;
+	top: auto;
+	bottom: 0;
+}
+
+.gt_left {
+	position: absolute;
+	right: auto;
+	left: 0;
+}
+
+/* Keyframes per https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes */
+@-webkit-keyframes gt_fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@-webkit-keyframes gt_fadeOut {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes gt_rotate {
+	0% {
+		-webkit-transform: rotate(0);
+	}
+	100% {
+		-webkit-transform: rotate(360deg);
+	}
 }

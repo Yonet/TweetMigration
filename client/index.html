@@ -1,33 +1,52 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="styles/style.css">
-    <title>Tweets Migration Globe</title>
-    <meta charset="utf-8">
-    <script src="js/lib/three.js"></script>
-    <script src="js/lib/jquery.js"></script>
-    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
-    <script src="js/lib/OrbitControls.js"></script>
-    <script src="js/lib/trackball_controls.js"></script>
-    <script src="js/lib/stats.js"></script>
-    <script src="js/lib/tween.min.js"></script>
-<!--     // <script src="bundle.js"></script> -->
-    <script src="js/src/gt.js"></script>
-<!--     // <script src="js/src/gt.points.js"></script> -->
-    <script src="js/src/gt.utils.js"></script>
+	<head>
+		<title>Tweet Migration</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="/styles/icons.css">
+		<link rel="stylesheet" href="/styles/style.css">
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/scripts/lib/webgl-heatmap.js"></script>
+		<script src="/scripts/lib/three.js"></script>
+		<script src="/scripts/lib/Stats.js"></script>
+		<script src="/scripts/lib/THREE.OrbitControls.js"></script>
+		<script src="/scripts/lib/THREE.TrackballControls.js"></script>
+		<script src="/scripts/gt/gt.js"></script>
+		<script src="/scripts/gt/gt.Globe.js"></script>
+		<script src="/scripts/gt/gt.Skybox.js"></script>
+		<script src="/scripts/gt/gt.Heatmap.js"></script>
+		<script src="/scripts/gt/gt.Marker.js"></script>
+		<script src="/scripts/gt/gt.App.js"></script>
+		<script src="/scripts/gt/gt.util.js"></script>
 
-  </head>
-  <body>
-    <div id="container"></div>
-    <script>
-      $(function() {
-        var socket = io.connect('http://localhost:8080');
-        var container = document.getElementById('container');
-        //gt.Globe(container);
-        socket.on('connection', function (data) {
-          gt.Globe(container,data);
-        });
-      });
-  </script>
-  </body>
+		<script>
+			window.addEventListener('load', gt.init);
+		</script>
+
+		<script id="gt_template" type="template">
+			<div class="gt_container">
+				<div class="gt_layer gt_search gt_top gt_left">
+					<input type="search" class="gt_input" placeholder="hashtag">
+					<button class="gt_button gt_locationButton gt_icon-location"></button>
+				</div>
+				<div class="gt_layer gt_top gt_right">
+					<label class="gt_select">
+						<select class="gt_heatmapType" class="gt_icon">
+							<option value="clouds">☁ Clouds</option>
+							<option value="lightning">↯ Lightning</option>
+							<option value="ozone">♨ Ozone</option>
+							<option value="fire">☼ Fire</option>
+						</select>
+					</label>
+					<button class="gt_button gt_pauseButton gt_icon-pause"></button>
+				</div>
+				<div class="gt_output gt_count gt_bottom gt_right">-</div>
+				<div class="gt_overlay">
+					<div class="gt_indicator gt_icon-pause"></div>
+				</div>
+			</div>
+		</script>
+
+	</head>
+	<body></body>
 </html>
