@@ -55,7 +55,6 @@ gt.Heatmap.prototype.set = function(options) {
 
 gt.Heatmap.prototype.add = function(data) {
 	var pos = gt.util.latLongTo2dCoordinate(data.location[0], data.location[1], this.width, this.height)
-
 	if (pos.x === 0) {
 		console.error('Got 0,0 location', data)
 	}
