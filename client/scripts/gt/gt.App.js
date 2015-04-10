@@ -218,6 +218,7 @@ gt.App.prototype.setSunPosition = function(dayOfYear, utcHour) {
 	// Calcuate the 3D position of the sun
 	var sunPos = gt.util.latLongToVector3(sunAngle, sunLong, 1500);
 	this.directionalLight.position.copy(sunPos);
+	// console.log('%s on %d day of year: Sun at longitude %s, angle %s', utcHour.toFixed(3), dayOfYear, sunLong.toFixed(3), sunAngle.toFixed(3));
 };
 
 gt.App.prototype.startWatchingGPS = function() {

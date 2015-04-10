@@ -19,14 +19,17 @@ gt.util = {
 		var pos = {};
 
 		// Get X value
-		pos.x = (longitude+180)*(mapWidth/360);
+		pos.x = (mapWidth*(longitude)/360)%mapWidth+(mapWidth/2);
+		// pos.x = (longitude+180)*(mapWidth/360);
 		
 		// Convert from degrees to radians
 		var latRad = gt.util.deg2rad(latitude);
 
 		// Get Y value
-		var mercN = Math.log(Math.tan((Math.PI/4)+(latRad/2)));
-		pos.y  = (mapHeight/2)-(mapWidth*mercN/(2*Math.PI));
+		var mercN = Math.log(Math.tan((Math.PI/4)+(latRad/2))) * Math.cos(latRad/Math.PI*2); // Close enough
+		pos.y = (mapHeight/2)-(mapWidth*mercN/(2*Math.PI));
+		// var mercN = Math.log(Math.tan((Math.PI/4)+(latRad/2)));
+		// pos.y  = (mapHeight/2)-(mapWidth*mercN/(2*Math.PI));
 
 		if (isNaN(pos.y) || isNaN(pos.x)) {
 			throw new Error('Failed to calculate position for '+latitude+','+longitude);
@@ -40,7 +43,7 @@ gt.util = {
 	},
 
 	deg2rad: function(deg) {
-		return -deg * Math.PI / 180;
+		return deg * Math.PI / 180;
 	},
 
 	// Get the fractional day of the year for a given date
