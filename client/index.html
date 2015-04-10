@@ -3,6 +3,8 @@
 	<head>
 		<title>Tweet Migration</title>
 		<meta charset="utf-8">
+		<meta name="description" content="Heatmap representation of tweeter stream on WebGl 3D world map.">
+		<meta name="author" content="Aysegul Yonet, Larry Davis">
 		<link rel="stylesheet" href="/styles/icons.css">
 		<link rel="stylesheet" href="/styles/style.css">
 		<script src="/socket.io/socket.io.js"></script>
@@ -24,9 +26,10 @@
 		</script>
 
 		<script id="gt_template" type="template">
+			// Container
 			<div class="gt_container">
 				<div class="gt_layer gt_search gt_top gt_left">
-					<input type="search" class="gt_input" placeholder="hashtag">
+					<input type="search" class="gt_input" placeholder="hashtag"/>
 					<button class="gt_button gt_locationButton gt_icon-location"></button>
 				</div>
 				<div class="gt_layer gt_top gt_right">
@@ -45,6 +48,7 @@
 					<div class="gt_indicator gt_icon-pause"></div>
 				</div>
 			</div>
+			/// Container
 		</script>
 
 	</head>
