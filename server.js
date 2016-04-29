@@ -1,5 +1,5 @@
 var http = require('http');
-var socketio = require('socket.io');
+//var socketio = require('socket.io');
 var express = require('express');
 var path = require('path');
 var fs = require('fs');
@@ -9,16 +9,15 @@ require('./lib/_console.js');
 
 // Create app
 var app = express();
-var server = http.createServer(app);
-var io = socketio.listen(server);
-io.set('log level', 1);
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
 // Store the root path of the app
 app.set('root', __dirname);
 
 // Store configuration
 var defaults = {
-	debug: false
+	debug: true
 };
 
 // Include configuration, combine with defaults

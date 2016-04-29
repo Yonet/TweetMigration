@@ -9,13 +9,15 @@
     "url": "https://github.com/Yonet/TweetMigration.git"
   },
   "engines": {
-    "node": "0.12.2",
-    "npm": "2.7.4"
+    "node": "6.0.0",
+    "npm": "3.8.6"
   },
   "keywords": [
     "twitter",
     "webgl",
-    "heatmap"
+    "heatmap",
+    "visualization",
+    "angular2"
   ],
   "author": "Aysegul Yonet",
   "license": "BSD",
@@ -23,10 +25,12 @@
     "url": "https://github.com/Yonet/TweetMigration/issues"
   },
   "dependencies": {
-    "socket.io": "~0.9.16",
-    "express": "~3.4.0",
-    "twitter": "~0.2.3",
-    "underscore": "~1.5.2",
+    "socket.io": "~1.4.5",
+    "express": "~4.13.4",
+    "underscore": "~1.8.3",
     "shellcolor": "~0.1.0"
+  },
+  "devDependencies": {
+    "twit": "^2.2.3"
   }
 }
